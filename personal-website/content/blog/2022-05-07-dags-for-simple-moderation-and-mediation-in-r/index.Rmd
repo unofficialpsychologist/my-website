@@ -27,7 +27,7 @@ A fuller DAG of the above situation would get pretty complicated because we can 
 Let’s move on to the DAGs. (DAG stands for directed acyclic graph.)
 
 Packages used:
-```{r, echo=FALSE}
+```{r pkgs, echo=FALSE, error=FALSE, message=FALSE}
 library(tidyverse)
 library(dagitty)
 library(ggplot2)
@@ -37,7 +37,7 @@ library(ggdag)
 ## Mediation DAG
 Create a simple DAG modeling the direct and indirect effects of X on Y with a mediator M:
 
-```{r}
+```{r meddag, error=FALSE, message=FALSE}
 ### Mediation DAG
 
 #Define coordinates for each node - optional if don't care
@@ -64,11 +64,11 @@ mymeddag
 ### Moderation DAG
 Create a simple DAG modeling moderation of the X and Y relationship by moderator M:
 
-```{r}
+```{r moddag, error=FALSE, message=FALSE}
 #Define coordinates of each node - optional if don't care
 coord2 <- list(
   x=c(X=0, Y=2, M=1, holder=1),
-  y=c(X=0, Y=0, M=-1, holder=0.1))
+  y=c(X=0, Y=0, M=-1, holder=0.05))
 
 #Create DAG 
 mymoddag <- dagify(Y ~ X, 

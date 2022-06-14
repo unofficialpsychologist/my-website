@@ -1,0 +1,75 @@
+---
+title: "DAGs for simple moderation and mediation in R"
+author: "Hannah Blackburn"
+date: "6/13/2022"
+output: html_document
+---
+
+
+
+<div id="difference-in-mediation-and-moderation" class="section level2">
+<h2>Difference in mediation and moderation</h2>
+<p>Suppose we are modeling the relationship between two variables X and Y. We hypothesize a causal relationship of X on Y.</p>
+<p>Suppose, however, that there is another variable M that is related to both X and Y. Based on theory, it is hypothesized to be affected by X (X causes M) and itself affect Y (M causes Y). This variable M is a mediator. It mediates the effect of X on Y because some of the effect from changing values of X results in a change in M which changes Y, as opposed to only a direct effect of X on Y. This effect of X through the mediator is called the indirect effect.</p>
+<p>But what if M is related to X and Y in a different way? What if it changes how X affects Y, even though X -&gt; M -&gt; Y is not a causal linkage? Then M would be a moderator.</p>
+<p>Let’s look a quick example. Say we hypothesize a causal link between having ADHD (X) and depression (Y). A moderating variable could be how structured a child’s home environment is (M). We hypothesize the more structured the environment, the less challenging having ADHD will be, and then the effect of ADHD on depressive symptoms will be less strong. The level of structure in the home has moderated the effect of ADHD on depression.</p>
+<p>A mediating variable in this case might be the number of friends a child has. ADHD may cause difficulty maintaining social relationships, and having fewer friends may cause depression in and of itself. The number of friends mediates the effect of ADHD on depression.</p>
+<p>The key difference is that the mediator is caused by X (time-wise, it occurs after X), while the moderating factor is typically an environmental or high-level factor that doesn’t happen as a result of X, but changes how much X affects Y.</p>
+<p>A fuller DAG of the above situation would get pretty complicated because we can actually have ADHD diagnosis for a child be correlated with lower structure levels in the home, since ADHD is genetic and parents may also have symptoms which lead to disorganization at home. Plus, there’s a million other symptoms and steps in a causal chain from ADHD to depression.</p>
+<p>Let’s move on to the DAGs. (DAG stands for directed acyclic graph.)</p>
+<p>Packages used:</p>
+</div>
+<div id="mediation-dag" class="section level2">
+<h2>Mediation DAG</h2>
+<p>Create a simple DAG modeling the direct and indirect effects of X on Y with a mediator M:</p>
+<pre class="r"><code>### Mediation DAG
+
+#Define coordinates for each node - optional if don&#39;t care
+coord &lt;- list(
+  x=c(X=0, Y=2, M=1),
+  y=c(X=0, Y=0, M=-1))
+
+#Create DAG 
+mymeddag &lt;- dagify(M ~ X, 
+                Y ~ X + M,
+                coords=coord,
+                exposure = &quot;X&quot;,
+                outcome = &quot;Y&quot;) %&gt;% #Define relations and positions of nodes
+  tidy_dagitty() %&gt;% #Convert to tidy object
+  ggplot(aes(x=x, y=y, xend=xend, yend=yend)) + #define graph and mapping
+  geom_dag_node(col=&quot;pink&quot;) +
+  geom_dag_edges() +
+  geom_dag_text(col=&quot;black&quot;) +
+  theme_dag() 
+
+mymeddag</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/meddag-1.png" width="672" /></p>
+<div id="moderation-dag" class="section level3">
+<h3>Moderation DAG</h3>
+<p>Create a simple DAG modeling moderation of the X and Y relationship by moderator M:</p>
+<pre class="r"><code>#Define coordinates of each node - optional if don&#39;t care
+coord2 &lt;- list(
+  x=c(X=0, Y=2, M=1, holder=1),
+  y=c(X=0, Y=0, M=-1, holder=0.05))
+
+#Create DAG 
+mymoddag &lt;- dagify(Y ~ X, 
+                holder ~ M,
+                coords=coord2,
+                exposure = &quot;X&quot;,
+                outcome = &quot;Y&quot;) %&gt;% #Define relations and positions
+  tidy_dagitty() %&gt;% #Convert to tidy object
+  ggplot(aes(x=x, y=y, xend=xend, yend=yend)) + #Define graph and mapping
+  geom_dag_node(data = function(x) filter(x, name != &quot;holder&quot;), #don&#39;t show holder
+                col=&quot;pink&quot;) + 
+  geom_dag_edges() +
+  geom_dag_text(data = function(x) filter(x, name != &quot;holder&quot;), #don&#39;t show holder
+                col=&quot;black&quot;) +
+  theme_dag()
+
+mymoddag</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/moddag-1.png" width="672" /></p>
+<p>The key difference is that in the moderation DAG we need to pretend there is a node on the edge linking X and Y so that the edge from M will be drawn. BUT we don’t want the node to actually show up, thus the limitations in the geoms.</p>
+<p>You could also use ggdag to accomplish similar feats, but I liked specifying it all within the more familiar ggplot structure of geoms.</p>
+</div>
+</div>

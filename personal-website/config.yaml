@@ -15,7 +15,7 @@ params:
   social:
     Email: unofficialpsychologist@gmail.com
     Github: unofficialpsychologist
-    Twitter: @hannah_h_b
+    Twitter: "@hannah_h_b"
 menu:
   main:
     - identifier: blog
