@@ -1,4 +1,4 @@
-baseURL: https://example.com/
+baseURL: https://hannah-blackburn.netlify.app/
 languageCode: en-US
 title: Hannah Blackburn
 disqusShortname: ''
@@ -11,27 +11,22 @@ params:
   avatar: img/profile.png
   custom_css: []
   custom_js: []
-  description: Describe your website
+  description: Hannah Blackburn is the unofficial psychologist. 
   social:
-    Email: email@example.com
-    Github: username
-    LinkedIn: username
-    Medium: username
-    RSS: /blog/index.xml
-    Stackoverflow: username
-    Telegram: username
-    Twitter: username
+    Email: unofficialpsychologist@gmail.com
+    Github: unofficialpsychologist
+    Twitter: @hannah_h_b
 menu:
   main:
     - identifier: blog
       name: blog
       url: /blog/
-      weight: 100
-    - identifier: projects
-      name: projects
-      url: /projects/s
-      weight: 200
+      weight: 1
+    - identifier: about
+      name: about
+      url: /about/
+      weight: 2
     - identifier: resume
       name: resume
       url: /resume/
-      weight: 300
+      weight: 3
